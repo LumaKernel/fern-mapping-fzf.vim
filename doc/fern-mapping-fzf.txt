@@ -27,7 +27,7 @@ MAPPINGS 				*fern-mapping-fzf-mappings*
 | ------- | ------------- | --------------------------------------- |
 | ff      | fzf-files     | Fzf for files                           |
 | fd      | fzf-dirs      | Fzf for directories                     |
-| fa      | fzf-both      | Fzf for both files and directoris       |
+| fa      | fzf-both      | Fzf for both files and directories      |
 
 You can costime the mapping like below.
 >

@@ -25,7 +25,7 @@ depends = ['fzf', 'fern.vim']
 | ------- | ------------- | --------------------------------------- |
 | `ff`    | `fzf-files`   | Fzf for files                           |
 | `fd`    | `fzf-dirs`    | Fzf for directories                     |
-| `fa`    | `fzf-both`    | Fzf for both files and directoris       |
+| `fa`    | `fzf-both`    | Fzf for both files and directories      |
 
 More details, see [`:help fern-mapping-fzf`](https://github.com/LumaKernel/fern-mapping-fzf.vim/blob/master/doc/fern-mapping-fzf.txt) .
 
