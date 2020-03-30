@@ -3,12 +3,12 @@ let s:F = vital#fern#import('System.Filepath')
 
 function! fern#mapping#fzf#init(disable_default_mappings) abort
   nnoremap <buffer><silent> <Plug>(fern-action-fzf-files) :<C-u>call <SID>call('fzf_files')<CR>
-  nnoremap <buffer><silent> <Plug>(fern-action-fzf-directories) :<C-u>call <SID>call('fzf_directories')<CR>
+  nnoremap <buffer><silent> <Plug>(fern-action-fzf-dirs) :<C-u>call <SID>call('fzf_dirs')<CR>
   nnoremap <buffer><silent> <Plug>(fern-action-fzf-both) :<C-u>call <SID>call('fzf_both')<CR>
 
   if !a:disable_default_mappings && !g:fern#mapping#fzf#disable_default_mappings
     nmap <buffer> ff <Plug>(fern-action-fzf-files)
-    nmap <buffer> fd <Plug>(fern-action-fzf-directories)
+    nmap <buffer> fd <Plug>(fern-action-fzf-dirs)
     nmap <buffer> fa <Plug>(fern-action-fzf-both)
   endif
 endfunction
@@ -23,7 +23,7 @@ endfunction
 function! s:map_fzf_files(helper) abort
   return s:fzf(a:helper, 1, 0)
 endfunction
-function! s:map_fzf_directories(helper) abort
+function! s:map_fzf_dirs(helper) abort
   return s:fzf(a:helper, 0, 1)
 endfunction
 function! s:map_fzf_both(helper) abort
