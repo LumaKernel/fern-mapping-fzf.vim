@@ -6,8 +6,8 @@
 
 - [lambdalisue/fern.vim](https://github.com/lambdalisue/fern.vim)
 - [junegunn/fzf](https://github.com/junegunn/fzf)
-- For Windows users, `sh` and `find` command compatible with UNIX.
-  - You can find them from like `scoop install unxutils`.
+- For Windows users, `sh` and `find` command compatible with UNIX-like.
+  - You can find them from like Cygwin. (Note that some tools are not working fine.)
 
 ## Installation
 

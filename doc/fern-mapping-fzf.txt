@@ -17,8 +17,8 @@ DEPENDENCIES				*fern-mapping-fzf-dependencies*
 
 - https://github.com/lambdalisue/fern.vim
 - https://github.com/junegunn/fzf
-- For Windows users, `sh` and `find` command compatible with UNIX.
-  - You can find them from like `scoop install unxutils`.
+- For Windows users, `sh` and `find` command compatible with UNIX-like.
+    - You can find them from like Cygwin. (Note that some tools are not working fine.)
 
 ==============================================================================
 MAPPINGS 				*fern-mapping-fzf-mappings*
