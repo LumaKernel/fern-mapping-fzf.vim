@@ -9,6 +9,16 @@
 - For Windows users, `sh` and `find` command compatible with UNIX.
   - You can find them from like `scoop install unxutils`.
 
+## Installation
+
+Example for [dein](https://github.com/Shougo/dein.vim) with TOML.
+
+```toml
+[[plugins]]
+repo = 'LumaKernel/fern-mapping-fzf.vim'
+depends = ['fzf', 'fern.vim']
+```
+
 ## Usage
 
 | Mapping | Action        | Description                             |
@@ -18,9 +28,7 @@
 | `fa`    | `fzf-both`    | Fzf for both files and directoris       |
 
 More details, see [`:help fern-mapping-fzf`](https://github.com/LumaKernel/fern-mapping-fzf.vim/blob/master/doc/fern-mapping-fzf.txt) .
-
 ## Screenshot
-
 
 
 ## License
