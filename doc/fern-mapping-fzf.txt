@@ -29,7 +29,7 @@ MAPPINGS 				*fern-mapping-fzf-mappings*
 | fd      | fzf-dirs      | Fzf for directories                     |
 | fa      | fzf-both      | Fzf for both files and directories      |
 
-You can costime the mapping like below.
+You can customize the mapping like below.
 >
 	let g:fern#mapping#fzf#disable_default_mappings = 1
 	function! s:init_fern_mapping_fzf() abort
