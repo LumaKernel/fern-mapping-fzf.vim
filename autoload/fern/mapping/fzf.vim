@@ -90,9 +90,9 @@ function! s:make_sink(root_path) abort
       let full_path = s:F.join(a:root_path, tail_path)
       let dict = { 'root_path': a:root_path, 'full_path': full_path }
       if isdirectory(full_path)
-        if type(g:Fern_mapping_fzf_file_sink) == v:t_func
+        if type(g:Fern_mapping_fzf_dir_sink) == v:t_func
           let dict.is_dir = v:true
-          call g:Fern_mapping_fzf_file_sink(dict)
+          call g:Fern_mapping_fzf_dir_sink(dict)
         else
           exe 'Fern' full_path
         endif
@@ -117,7 +117,7 @@ function! s:escape(str) abort
 endfunction
 
 let g:fern#mapping#fzf#disable_default_mappings = get(g:, 'fern#mapping#fzf#disable_default_mappings', 0)
-let g:Fern_mapping_fzf_file_sink = get(g:, 'Fern_mapping_fzf_file_sink', 0)
+let g:Fern_mapping_fzf_dir_sink = get(g:, 'Fern_mapping_fzf_dir_sink', 0)
 let g:Fern_mapping_fzf_file_sink = get(g:, 'Fern_mapping_fzf_file_sink', 0)
 let g:fern#mapping#fzf#fzf_options = get(g:, 'fern#mapping#fzf#fzf_options', {})
 
