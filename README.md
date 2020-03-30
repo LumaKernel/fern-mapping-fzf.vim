@@ -1,4 +1,4 @@
-# fern-mapping-call-function
+# fern-mapping-fzf.vim
 
 [![fern plugin](https://img.shields.io/badge/🌿%20fern-plugin-yellowgreen)](https://github.com/lambdalisue/fern.vim)
 
