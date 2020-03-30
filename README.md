@@ -28,8 +28,10 @@ depends = ['fzf', 'fern.vim']
 | `fa`    | `fzf-both`    | Fzf for both files and directoris       |
 
 More details, see [`:help fern-mapping-fzf`](https://github.com/LumaKernel/fern-mapping-fzf.vim/blob/master/doc/fern-mapping-fzf.txt) .
+
 ## Screenshot
 
+![fern-mapping-fzf](https://user-images.githubusercontent.com/29811106/77903876-8e00ef00-72be-11ea-8d17-fa312cc2ab93.gif)
 
 ## License
 
