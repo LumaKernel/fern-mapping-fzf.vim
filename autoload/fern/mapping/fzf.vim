@@ -57,6 +57,7 @@ function! s:fzf(helper, files, dirs) abort
   endfor
 
   call filter(file_paths, {i,v -> len(filter(copy(dir_paths), {j, w -> s:F.contains(v, w)})) == 0})
+  call filter(dir_paths, {i,v -> len(filter(copy(dir_paths), {j, w -> v !=# w && s:F.contains(v, w)})) == 0})
   call map(file_paths, {i,v -> printf('echo "%s"', s:escape(v))})
   if !a:files
     call map(dir_paths, {i,v -> printf('find -L "%s" -type d', s:escape(v))})
