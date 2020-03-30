@@ -42,7 +42,6 @@ You can costime the mapping like below.
 	    autocmd! *
 	    autocmd FileType fern call s:init_fern_mapping_fzf()
 	augroup END
-<
 
 ==============================================================================
 OPTIONS 				*fern-mapping-fzf-options*
@@ -51,14 +50,27 @@ OPTIONS 				*fern-mapping-fzf-options*
 	Set `1` to disable deafult mapping.
 	Deafult: `0`
 
-*g:fern#mapping#fzf#file_sink*
-	Set funcref that accepts one string argument that is file full path.
+*g:Fern_mapping_fzf_file_sink*
+	Set funcref that accepts one {dict} argument.
+	  {dict}.full_path	: Full path to the file.
+	  {dict}.is_dir		: |v:false|
+	  {dict}.root_path	: Path original fern executed.
 	Note: Censoring the drawer mode is not supported now, sorry.
 	Default: Run |:edit|
+Example: >
+	" Recipe for :Fern reveal
+	function! s:reveal(dict) abort
+	    execute printf("Fern %s -reveal=%s", a:dict.root_path, a:dict.full_path)
+	endfunction
+	let g:Fern_mapping_fzf_file_sink = function('s:reveal')
+	let g:Fern_mapping_fzf_dir_sink = function('s:reveal')
+<
 
-*g:fern#mapping#fzf#dir_sink*
-	Set funcref that accepts one string argument that is directory full
-	path.
+*g:Fern_mapping_fzf_dir_sink*
+	Set funcref that accepts one {dict} argument.
+	  {dict}.full_path	: Full path to the directory
+	  {dict}.is_dir		: |v:true|
+	  {dict}.root_path	: Path original fern executed.
 	Default: Run |:Fern|
 
 *g:fern#mapping#fzf#fzf_options*
