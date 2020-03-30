@@ -1,0 +1,74 @@
+*fern-mapping-fzf.txt*		fern.vim plugin for fzf
+
+Author : Luma <tomorinao.info@gmail.com>
+License: MIT <https://opensource.org/licenses/MIT>
+
+==============================================================================
+CONTENTS				*fern-mapping-fzf-contents*
+
+DEPENDENCIES			|fern-mapping-fzf-dependencies|
+MAPPINGS			|fern-mapping-fzf-mappings|
+OPTIONS				|fern-mapping-fzf-options|
+
+==============================================================================
+DEPENDENCIES				*fern-mapping-fzf-dependencies*
+
+*fern-mapping-fzf* requires...
+
+- https://github.com/lambdalisue/fern.vim
+- https://github.com/junegunn/fzf
+- For Windows users, `sh` and `find` command compatible with UNIX.
+  - You can find them from like `scoop install unxutils`.
+
+==============================================================================
+MAPPINGS 				*fern-mapping-fzf-mappings*
+
+| Mapping | Action        | Description                             |
+| ------- | ------------- | --------------------------------------- |
+| ff      | fzf-files     | Fzf for files                           |
+| fd      | fzf-dirs      | Fzf for directories                     |
+| fa      | fzf-both      | Fzf for both files and directoris       |
+
+You can costime the mapping like below.
+>
+	let g:fern#mapping#fzf#disable_default_mappings = 1
+	function! s:init_fern_mapping_fzf() abort
+	    nmap <buffer> F <Plug>(fern-action-fzf-files)
+	    nmap <buffer> d <Plug>(fern-action-fzf-dirs)
+	    nmap <buffer> A <Plug>(fern-action-fzf-both)
+	endfunction
+
+	augroup my-fern-mapping-fzf
+	    autocmd! *
+	    autocmd FileType fern call s:init_fern_mapping_fzf()
+	augroup END
+<
+
+==============================================================================
+OPTIONS 				*fern-mapping-fzf-options*
+
+*g:fern#mapping#fzf#disable_default_mappings*
+	Set `1` to disable deafult mapping.
+	Deafult: `0`
+
+*g:fern#mapping#fzf#file_sink*
+	Set funcref that accepts one string argument that is file full path.
+	Note: Censoring the drawer mode is not supported now, sorry.
+	Default: Run |:edit|
+
+*g:fern#mapping#fzf#dir_sink*
+	Set funcref that accepts one string argument that is directory full
+	path.
+	Default: Run |:Fern|
+
+*g:fern#mapping#fzf#fzf_options*
+	This is extended to options that is going to be passed to |fzf#run|.
+	Default: `{}`
+
+*g:fern#mapping#fzf#skip_check*
+	Set `1` to skip executable existence check if you are convinced no
+	problem about this.
+	Default: `0`
+
+==============================================================================
+vim:tw=78:ts=8:noet:ft=help:norl
