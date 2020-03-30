@@ -42,6 +42,7 @@ You can costime the mapping like below.
 	    autocmd! *
 	    autocmd FileType fern call s:init_fern_mapping_fzf()
 	augroup END
+<
 
 ==============================================================================
 OPTIONS 				*fern-mapping-fzf-options*
