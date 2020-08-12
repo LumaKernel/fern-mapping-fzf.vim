@@ -87,9 +87,16 @@ endfunction
 
 function! s:make_sink(root_path) abort
   function! s:sink(paths) abort closure
-    for tail_path in a:paths
-      let full_path = s:F.join(a:root_path, tail_path)
-      let dict = { 'root_path': a:root_path, 'full_path': full_path }
+    for relative_path in a:paths
+      while relative_path[:1] ==# './' || relative_path[:1] ==# '.\'
+        let relative_path = relative_path[2:]
+      endwhile
+      let full_path = s:F.join(a:root_path, relative_path)
+      let dict = {
+            \   'root_path': a:root_path,
+            \   'full_path': full_path,
+            \   'relative_path': relative_path,
+            \ }
       if isdirectory(full_path)
         if type(g:Fern_mapping_fzf_dir_sink) == v:t_func
           let dict.is_dir = v:true
