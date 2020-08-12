@@ -54,14 +54,16 @@ OPTIONS 				*fern-mapping-fzf-options*
 *g:Fern_mapping_fzf_file_sink*
 	Set funcref that accepts one {dict} argument.
 	  {dict}.full_path	: Full path to the file.
+	  {dict}.relative_path	: Relative path from {dict}.root_path to the
+				  file. Useful for |:FernReveal|.
 	  {dict}.is_dir		: |v:false|
 	  {dict}.root_path	: Path original fern executed.
 	Note: Censoring the drawer mode is not supported now, sorry.
 	Default: Run |:edit|
 Example: >
-	" Recipe for :Fern reveal
+	" Recipe for :FernReveal
 	function! s:reveal(dict) abort
-	    execute printf("Fern %s -reveal=%s", a:dict.root_path, a:dict.full_path)
+	    execute "FernReveal" a:dict.relative_path
 	endfunction
 	let g:Fern_mapping_fzf_file_sink = function('s:reveal')
 	let g:Fern_mapping_fzf_dir_sink = function('s:reveal')
@@ -70,6 +72,8 @@ Example: >
 *g:Fern_mapping_fzf_dir_sink*
 	Set funcref that accepts one {dict} argument.
 	  {dict}.full_path	: Full path to the directory
+	  {dict}.relative_path	: Relative path from {dict}.root_path to the
+				  directory. Useful for |:FernReveal|.
 	  {dict}.is_dir		: |v:true|
 	  {dict}.root_path	: Path original fern executed.
 	Default: Run |:Fern|
