@@ -53,13 +53,14 @@ OPTIONS 				*fern-mapping-fzf-options*
 
 *g:Fern_mapping_fzf_file_sink*
 	Set funcref that accepts one {dict} argument.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
 	  {dict}.full_path	: Full path to the file.
 	  {dict}.relative_path	: Relative path from {dict}.root_path to the
 				  file. Useful for |:FernReveal|.
 	  {dict}.is_dir		: |v:false|
 	  {dict}.root_path	: Path original fern executed.
 	Note: Censoring the drawer mode is not supported now, sorry.
-	Default: Run |:edit|
+	Default: Respects fzf default behavior. See |g:fzf_action|.
 Example: >
 	" Recipe for :FernReveal
 	function! s:reveal(dict) abort
@@ -71,14 +72,26 @@ Example: >
 
 *g:Fern_mapping_fzf_dir_sink*
 	Set funcref that accepts one {dict} argument.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
 	  {dict}.full_path	: Full path to the directory
 	  {dict}.relative_path	: Relative path from {dict}.root_path to the
 				  directory. Useful for |:FernReveal|.
 	  {dict}.is_dir		: |v:true|
 	  {dict}.root_path	: Path original fern executed.
-	Default: Run |:Fern|
+	Default: Respects fzf default behavior. See |g:fzf_action|.
+
+*g:Fern_mapping_fzf_customize_option*
+	Set funcref that accepts one {spec-dict} argument and return dict.
+	This would be passed to |fzf#run|. See |fzf#run| for more information.
+Example: >
+	function! Fern_mapping_fzf_customize_option(spec)
+	    let a:spec.options .= ' --multi'
+	    return a:spec
+	endfunction
+  <
 
 *g:fern#mapping#fzf#fzf_options*
+	DEPRECATED: Please consider using |g:Fern_mapping_fzf_customize_option| instead.
 	This is extended to options that is going to be passed to |fzf#run|.
 	Default: `{}`
 
