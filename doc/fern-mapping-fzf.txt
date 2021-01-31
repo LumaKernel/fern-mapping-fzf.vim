@@ -59,7 +59,7 @@ OPTIONS 				*fern-mapping-fzf-options*
 	  {dict}.is_dir		: |v:false|
 	  {dict}.root_path	: Path original fern executed.
 	Note: Censoring the drawer mode is not supported now, sorry.
-	Default: Run |:edit|
+	Default: Respects fzf default behavior. See |g:fzf_action|.
 Example: >
 	" Recipe for :FernReveal
 	function! s:reveal(dict) abort
@@ -76,9 +76,14 @@ Example: >
 				  directory. Useful for |:FernReveal|.
 	  {dict}.is_dir		: |v:true|
 	  {dict}.root_path	: Path original fern executed.
-	Default: Run |:Fern|
+	Default: Respects fzf default behavior. See |g:fzf_action|.
+
+*g:Fern_mapping_fzf_customize_option*
+	Set funcref that accepts one {spec-dict} argument and return dict.
+	This would be passed to |fzf#run|. See |fzf#run| for more information.
 
 *g:fern#mapping#fzf#fzf_options*
+	DEPRECATED: Please consider using |g:Fern_mapping_fzf_customize_option| instead.
 	This is extended to options that is going to be passed to |fzf#run|.
 	Default: `{}`
 

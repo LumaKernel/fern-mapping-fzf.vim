@@ -69,15 +69,19 @@ function! s:fzf(helper, files, dirs) abort
 
   let joined_cmd = join(file_paths + dir_paths, ' && ')
   let escaped_cmd = s:escape(joined_cmd)
+  let opts = fzf#wrap(
+        \   {
+        \     'source': printf('sh -c "%s"', escaped_cmd),
+        \     'dir': root_path,
+        \   }
+        \ )
+  let opts['sink*'] = s:make_sink(root_path, opts['sink*'])
+  if type(g:Fern_mapping_fzf_customize_option) == v:t_func
+    let opts = g:Fern_mapping_fzf_customize_option(opts)
+  endif
   call fzf#run(
         \   extend(
-        \     fzf#wrap(
-        \       {
-        \         'source': printf('sh -c "%s"', escaped_cmd),
-        \         'dir': root_path,
-        \         'sink*': s:make_sink(root_path)
-        \       }
-        \     ), g:fern#mapping#fzf#fzf_options
+        \     opts, g:fern#mapping#fzf#fzf_options
         \   )
         \ )
 
@@ -85,34 +89,60 @@ function! s:fzf(helper, files, dirs) abort
         \.then({ -> a:helper.async.redraw() })
 endfunction
 
-function! s:make_sink(root_path) abort
-  function! s:sink(paths) abort closure
-    for relative_path in a:paths
-      while relative_path[:1] ==# './' || relative_path[:1] ==# '.\'
-        let relative_path = relative_path[2:]
-      endwhile
-      let full_path = s:F.join(a:root_path, relative_path)
-      let dict = {
-            \   'root_path': a:root_path,
-            \   'full_path': full_path,
-            \   'relative_path': relative_path,
-            \ }
-      if isdirectory(full_path)
-        if type(g:Fern_mapping_fzf_dir_sink) == v:t_func
-          let dict.is_dir = v:true
-          call g:Fern_mapping_fzf_dir_sink(dict)
-        else
-          exe 'Fern' full_path
+function! s:nomalize_rel(rel) abort
+  let rel = a:rel
+  while rel[:1] ==# './' || rel[:1] ==# '.\'
+    let rel = rel[2:]
+  endwhile
+  return rel
+endfunction
+
+function! s:make_sink(root_path, common_sink) abort
+  function! s:sink(lines) abort closure
+    if len(a:lines) < 2
+      return
+    endif
+    let key = remove(a:lines, 0)
+    let rel_paths = map(a:lines, function('s:nomalize_rel'))
+    let ex_dir_sink =  type(g:Fern_mapping_fzf_dir_sink) == v:t_func
+    let ex_file_sink =  type(g:Fern_mapping_fzf_file_sink) == v:t_func
+
+    if !ex_dir_sink && !ex_file_sink
+      let full_paths = map(rel_path, {->s:F.join(a:root_path, v:val)})
+      call a:common_sink([key] + full_paths)
+    else
+      let dir_paths = [key]
+      let file_paths = [key]
+      for relative_path in a:rel_paths
+        let full_path = s:F.join(a:root_path, relative_path)
+        let dict = {
+              \   'root_path': a:root_path,
+              \   'full_path': full_path,
+              \   'relative_path': relative_path,
+              \ }
+        if isdirectory(full_path)
+          if ex_dir_sink
+            let dict.is_dir = v:true
+            call g:Fern_mapping_fzf_dir_sink(dict)
+          else
+            let dir_paths += [full_path]
+          endif
+        elseif filereadable(full_path)
+          if ex_file_sink
+            let dict.is_dir = v:false
+            call g:Fern_mapping_fzf_file_sink(dict)
+          else
+            let file_paths += [full_path]
+          endif
         endif
-      elseif filereadable(full_path)
-        if type(g:Fern_mapping_fzf_file_sink) == v:t_func
-          let dict.is_dir = v:false
-          call g:Fern_mapping_fzf_file_sink(dict)
-        else
-          exe 'edit' full_path
-        endif
+      endfor
+      if ex_dir_sink
+        call a:common_sink(dir_paths)
       endif
-    endfor
+      if !ex_file_sink
+        call a:common_sink(file_paths)
+      endif
+    endif
   endfunction
   return function('s:sink')
 endfunction
@@ -125,7 +155,14 @@ function! s:escape(str) abort
 endfunction
 
 let g:fern#mapping#fzf#disable_default_mappings = get(g:, 'fern#mapping#fzf#disable_default_mappings', 0)
+let g:Fern_mapping_fzf_customize_option = get(g:, 'Fern_mapping_fzf_customize_option', 0)
 let g:Fern_mapping_fzf_dir_sink = get(g:, 'Fern_mapping_fzf_dir_sink', 0)
 let g:Fern_mapping_fzf_file_sink = get(g:, 'Fern_mapping_fzf_file_sink', 0)
-let g:fern#mapping#fzf#fzf_options = get(g:, 'fern#mapping#fzf#fzf_options', {})
 
+" Deprecated
+if exists('g:fern#mapping#fzf#fzf_options')
+  echohl WarningMsg
+  echo "fern-mapping-fzf: warning: g:fern#mapping#fzf#fzf_options is deprecated. Please consider using Fern_mapping_fzf_customize_option instead."
+  echohl NONE
+endif
+let g:fern#mapping#fzf#fzf_options = get(g:, 'fern#mapping#fzf#fzf_options', {})
