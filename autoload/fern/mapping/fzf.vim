@@ -103,19 +103,22 @@ function! s:make_sink(root_path, common_sink) abort
       return
     endif
     let key = remove(a:lines, 0)
-    let rel_paths = map(a:lines, function('s:nomalize_rel'))
+    let rel_paths = a:lines
+    call map(rel_paths, {->s:nomalize_rel(v:val)})
     let ex_dir_sink =  type(g:Fern_mapping_fzf_dir_sink) == v:t_func
     let ex_file_sink =  type(g:Fern_mapping_fzf_file_sink) == v:t_func
 
     if !ex_dir_sink && !ex_file_sink
-      let full_paths = map(rel_path, {->s:F.join(a:root_path, v:val)})
+      let full_paths = copy(rel_paths)
+      call map(full_paths, {->s:F.join(a:root_path, v:val)})
       call a:common_sink([key] + full_paths)
     else
       let dir_paths = [key]
       let file_paths = [key]
-      for relative_path in a:rel_paths
+      for relative_path in rel_paths
         let full_path = s:F.join(a:root_path, relative_path)
         let dict = {
+              \   'key': key,
               \   'root_path': a:root_path,
               \   'full_path': full_path,
               \   'relative_path': relative_path,
@@ -136,7 +139,7 @@ function! s:make_sink(root_path, common_sink) abort
           endif
         endif
       endfor
-      if ex_dir_sink
+      if !ex_dir_sink
         call a:common_sink(dir_paths)
       endif
       if !ex_file_sink

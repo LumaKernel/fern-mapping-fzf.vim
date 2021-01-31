@@ -53,6 +53,7 @@ OPTIONS 				*fern-mapping-fzf-options*
 
 *g:Fern_mapping_fzf_file_sink*
 	Set funcref that accepts one {dict} argument.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
 	  {dict}.full_path	: Full path to the file.
 	  {dict}.relative_path	: Relative path from {dict}.root_path to the
 				  file. Useful for |:FernReveal|.
@@ -71,6 +72,7 @@ Example: >
 
 *g:Fern_mapping_fzf_dir_sink*
 	Set funcref that accepts one {dict} argument.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
 	  {dict}.full_path	: Full path to the directory
 	  {dict}.relative_path	: Relative path from {dict}.root_path to the
 				  directory. Useful for |:FernReveal|.
