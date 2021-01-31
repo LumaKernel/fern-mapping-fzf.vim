@@ -83,6 +83,12 @@ Example: >
 *g:Fern_mapping_fzf_customize_option*
 	Set funcref that accepts one {spec-dict} argument and return dict.
 	This would be passed to |fzf#run|. See |fzf#run| for more information.
+Example: >
+	function! Fern_mapping_fzf_customize_option(spec)
+	    let a:spec.options .= ' --multi'
+	    return a:spec
+	endfunction
+  <
 
 *g:fern#mapping#fzf#fzf_options*
 	DEPRECATED: Please consider using |g:Fern_mapping_fzf_customize_option| instead.
