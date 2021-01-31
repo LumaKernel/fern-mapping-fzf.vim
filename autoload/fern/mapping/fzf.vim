@@ -76,7 +76,7 @@ function! s:fzf(helper, files, dirs) abort
         \   }
         \ )
   let opts['sink*'] = s:make_sink(root_path, opts['sink*'])
-  if type(g:Fern_mapping_fzf_customize_option) == v:t_func
+  if exists("*g:Fern_mapping_fzf_customize_option") || type(get(g:, "Fern_mapping_fzf_customize_option")) == v:t_func
     let opts = g:Fern_mapping_fzf_customize_option(opts)
   endif
   call fzf#run(
@@ -105,8 +105,8 @@ function! s:make_sink(root_path, common_sink) abort
     let key = remove(a:lines, 0)
     let rel_paths = a:lines
     call map(rel_paths, {->s:nomalize_rel(v:val)})
-    let ex_dir_sink =  type(g:Fern_mapping_fzf_dir_sink) == v:t_func
-    let ex_file_sink =  type(g:Fern_mapping_fzf_file_sink) == v:t_func
+    let ex_dir_sink = exists("*g:Fern_mapping_fzf_dir_sink") || type(get(g:, "Fern_mapping_fzf_dir_sink")) == v:t_func
+    let ex_file_sink = exists("*g:Fern_mapping_fzf_file_sink") || type(get(g:, "Fern_mapping_fzf_file_sink")) == v:t_func
 
     if !ex_dir_sink && !ex_file_sink
       let full_paths = copy(rel_paths)
@@ -163,9 +163,4 @@ let g:Fern_mapping_fzf_dir_sink = get(g:, 'Fern_mapping_fzf_dir_sink', 0)
 let g:Fern_mapping_fzf_file_sink = get(g:, 'Fern_mapping_fzf_file_sink', 0)
 
 " Deprecated
-if exists('g:fern#mapping#fzf#fzf_options')
-  echohl WarningMsg
-  echo "fern-mapping-fzf: warning: g:fern#mapping#fzf#fzf_options is deprecated. Please consider using Fern_mapping_fzf_customize_option instead."
-  echohl NONE
-endif
 let g:fern#mapping#fzf#fzf_options = get(g:, 'fern#mapping#fzf#fzf_options', {})
