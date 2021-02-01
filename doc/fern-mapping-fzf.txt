@@ -60,6 +60,7 @@ OPTIONS 				*fern-mapping-fzf-options*
 	  {dict}.is_dir		: |v:false|
 	  {dict}.root_path	: Path original fern executed.
 	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
 	Be careful you cannot return Promise for now.
 	Default: Respects fzf default behavior. See |g:fzf_action|.
 Example: >
@@ -80,6 +81,7 @@ Example: >
 	  {dict}.is_dir		: |v:true|
 	  {dict}.root_path	: Path original fern executed.
 	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
 	Be careful you cannot return Promise for now.
 	Default: Respects fzf default behavior. See |g:fzf_action|.
 
@@ -96,9 +98,13 @@ Example: >
 <
 
 *g:Fern_mapping_fzf_before_all*
-	Set funcref that accepts one {spec-dict} argument. It can return
+	Set funcref that accepts one {dict} argument. It can return
 	Promise. It will be run before all running sink functions, but after
 	fzf finishing.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
+	  {dict}.root_path	: Path original fern executed.
+	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
 	Default: Do nothing.
 Example: >
 	function! Fern_mapping_fzf_before_all(dict)
@@ -107,8 +113,12 @@ Example: >
 <
 
 *g:Fern_mapping_fzf_after_all*
-	Set funcref that accepts one {spec-dict} argument. It can return
+	Set funcref that accepts one {dict} argument. It can return
 	Promise. It will be run after all running sink functions.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
+	  {dict}.root_path	: Path original fern executed.
+	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
 	Default: Do nothing.
 Example: >
 	function! s:reveal(dict)
