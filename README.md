@@ -37,7 +37,7 @@ More details, see [`:help fern-mapping-fzf`](https://github.com/LumaKernel/fern-
 
 ### FZF multiple and mark on Fern
 
-```
+```vim
 function! Fern_mapping_fzf_customize_option(spec)
     let a:spec.options .= ' --multi'
     return fzf#vim#with_preview(a:spec)
