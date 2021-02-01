@@ -1,6 +1,6 @@
 *fern-mapping-fzf.txt*		fern.vim plugin for fzf
 
-Author : Luma <tomorinao.info@gmail.com>
+Author : Luma <world@luma.email>
 License: MIT <https://opensource.org/licenses/MIT>
 
 ==============================================================================
