@@ -59,7 +59,9 @@ OPTIONS 				*fern-mapping-fzf-options*
 				  file. Useful for |:FernReveal|.
 	  {dict}.is_dir		: |v:false|
 	  {dict}.root_path	: Path original fern executed.
-	Note: Censoring the drawer mode is not supported now, sorry.
+	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
+	Be careful you cannot return Promise for now.
 	Default: Respects fzf default behavior. See |g:fzf_action|.
 Example: >
 	" Recipe for :FernReveal
@@ -78,17 +80,61 @@ Example: >
 				  directory. Useful for |:FernReveal|.
 	  {dict}.is_dir		: |v:true|
 	  {dict}.root_path	: Path original fern executed.
+	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
+	Be careful you cannot return Promise for now.
 	Default: Respects fzf default behavior. See |g:fzf_action|.
 
 *g:Fern_mapping_fzf_customize_option*
 	Set funcref that accepts one {spec-dict} argument and return dict.
 	This would be passed to |fzf#run|. See |fzf#run| for more information.
+	Default: Do nothing.
 Example: >
 	function! Fern_mapping_fzf_customize_option(spec)
 	    let a:spec.options .= ' --multi'
-	    return a:spec
+	    " Note that fzf#vim#with_preview comes from fzf.vim
+	    return fzf#vim#with_preview(a:spec)
 	endfunction
-  <
+<
+
+*g:Fern_mapping_fzf_before_all*
+	Set funcref that accepts one {dict} argument. It can return
+	Promise. It will be run before all running sink functions, but after
+	fzf finishing.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
+	  {dict}.root_path	: Path original fern executed.
+	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
+	Default: Do nothing.
+Example: >
+	function! Fern_mapping_fzf_before_all(dict)
+	    return a:dict.fern_helper.async.update_marks([])
+	endfunction
+<
+
+*g:Fern_mapping_fzf_after_all*
+	Set funcref that accepts one {dict} argument. It can return
+	Promise. It will be run after all running sink functions.
+	  {dict}.key		: The key used to finish fzf. e.g. `ctrl-v`
+	  {dict}.root_path	: Path original fern executed.
+	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
+	  {dict}.lines		: Lines got from fzf.
+	Default: Do nothing.
+Example: >
+	function! s:reveal(dict)
+	    execute "FernReveal -wait" a:dict.relative_path
+	    execute "normal \<Plug>(fern-action-mark:set)"
+	endfunction
+
+	function! Fern_mapping_fzf_after_all(dict)
+	    execute "normal \<Plug>(fern-action-open:vsplit)"
+	endfunction
+
+	let g:Fern_mapping_fzf_file_sink = function('s:reveal')
+	let g:Fern_mapping_fzf_dir_sink = function('s:reveal')
+<
+	NOTE: Disscussions in https://github.com/LumaKernel/fern-mapping-fzf.vim/issues/4
+	also may help.
 
 *g:fern#mapping#fzf#fzf_options*
 	DEPRECATED: Please consider using |g:Fern_mapping_fzf_customize_option| instead.

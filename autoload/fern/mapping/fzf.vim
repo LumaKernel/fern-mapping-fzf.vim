@@ -75,7 +75,7 @@ function! s:fzf(helper, files, dirs) abort
         \     'dir': root_path,
         \   }
         \ )
-  let opts['sink*'] = s:make_sink(root_path, opts['sink*'])
+  let opts['sink*'] = s:make_sink(root_path, opts['sink*'], a:helper)
   if exists("*g:Fern_mapping_fzf_customize_option") || type(get(g:, "Fern_mapping_fzf_customize_option")) == v:t_func
     let opts = g:Fern_mapping_fzf_customize_option(opts)
   endif
@@ -97,56 +97,92 @@ function! s:nomalize_rel(rel) abort
   return rel
 endfunction
 
-function! s:make_sink(root_path, common_sink) abort
+function! s:make_sink(root_path, common_sink, helper) abort
   function! s:sink(lines) abort closure
-    if len(a:lines) < 2
-      return
-    endif
-    let key = remove(a:lines, 0)
-    let rel_paths = a:lines
-    call map(rel_paths, {->s:nomalize_rel(v:val)})
-    let ex_dir_sink = exists("*g:Fern_mapping_fzf_dir_sink") || type(get(g:, "Fern_mapping_fzf_dir_sink")) == v:t_func
-    let ex_file_sink = exists("*g:Fern_mapping_fzf_file_sink") || type(get(g:, "Fern_mapping_fzf_file_sink")) == v:t_func
+    function! s:sink_main(...) abort closure
+      if len(a:lines) < 2
+        return s:Promise.resolve()
+      endif
+      let rel_paths = copy(a:lines)
+      let key = remove(rel_paths, 0)
+      call map(rel_paths, {->s:nomalize_rel(v:val)})
+      let ex_dir_sink = exists("*g:Fern_mapping_fzf_dir_sink") || type(get(g:, "Fern_mapping_fzf_dir_sink")) == v:t_func
+      let ex_file_sink = exists("*g:Fern_mapping_fzf_file_sink") || type(get(g:, "Fern_mapping_fzf_file_sink")) == v:t_func
 
-    if !ex_dir_sink && !ex_file_sink
-      let full_paths = copy(rel_paths)
-      call map(full_paths, {->s:F.join(a:root_path, v:val)})
-      call a:common_sink([key] + full_paths)
-    else
-      let dir_paths = [key]
-      let file_paths = [key]
-      for relative_path in rel_paths
-        let full_path = s:F.join(a:root_path, relative_path)
-        let dict = {
-              \   'key': key,
-              \   'root_path': a:root_path,
-              \   'full_path': full_path,
-              \   'relative_path': relative_path,
-              \ }
-        if isdirectory(full_path)
-          if ex_dir_sink
-            let dict.is_dir = v:true
-            call g:Fern_mapping_fzf_dir_sink(dict)
-          else
-            let dir_paths += [full_path]
+      if !ex_dir_sink && !ex_file_sink
+        let full_paths = copy(rel_paths)
+        call map(full_paths, {->s:F.join(a:root_path, v:val)})
+        call a:common_sink([key] + full_paths)
+      else
+        let dir_paths = [key]
+        let file_paths = [key]
+        for relative_path in rel_paths
+          let full_path = s:F.join(a:root_path, relative_path)
+          let dict = {
+                \   'key': key,
+                \   'lines': a:lines,
+                \   'fern_helper': a:helper,
+                \   'root_path': a:root_path,
+                \   'full_path': full_path,
+                \   'relative_path': relative_path,
+                \ }
+          if isdirectory(full_path)
+            if ex_dir_sink
+              let dict.is_dir = v:true
+              call g:Fern_mapping_fzf_dir_sink(dict)
+            else
+              let dir_paths += [full_path]
+            endif
+          elseif filereadable(full_path)
+            if ex_file_sink
+              let dict.is_dir = v:false
+              call g:Fern_mapping_fzf_file_sink(dict)
+            else
+              let file_paths += [full_path]
+            endif
           endif
-        elseif filereadable(full_path)
-          if ex_file_sink
-            let dict.is_dir = v:false
-            call g:Fern_mapping_fzf_file_sink(dict)
-          else
-            let file_paths += [full_path]
-          endif
+        endfor
+        if !ex_dir_sink
+          call a:common_sink(dir_paths)
         endif
-      endfor
-      if !ex_dir_sink
-        call a:common_sink(dir_paths)
+        if !ex_file_sink
+          call a:common_sink(file_paths)
+        endif
       endif
-      if !ex_file_sink
-        call a:common_sink(file_paths)
+      return s:Promise.resolve()
+    endfunction
+
+    function! s:sink_before_all(...) abort closure
+      let dict = {
+          \   'lines': copy(a:lines),
+          \   'fern_helper': a:helper,
+          \   'root_path': a:root_path,
+          \ }
+      let ex_before_all = exists("*g:Fern_mapping_fzf_before_all") || type(get(g:, "Fern_mapping_fzf_before_all")) == v:t_func
+      if ex_before_all
+        return s:Promise.resolve(g:Fern_mapping_fzf_before_all(dict))
       endif
-    endif
+      return s:Promise.resolve()
+    endfunction
+
+    function! s:sink_after_all(...) abort closure
+      let dict = {
+          \   'lines': copy(a:lines),
+          \   'fern_helper': a:helper,
+          \   'root_path': a:root_path,
+          \ }
+      let ex_after_all = exists("*g:Fern_mapping_fzf_after_all") || type(get(g:, "Fern_mapping_fzf_after_all")) == v:t_func
+      if ex_after_all
+        return s:Promise.resolve(g:Fern_mapping_fzf_after_all(dict))
+      endif
+      return s:Promise.resolve()
+    endfunction
+
+    call s:sink_before_all()
+      \.then(funcref('s:sink_main'))
+      \.then(funcref('s:sink_after_all'))
   endfunction
+
   return function('s:sink')
 endfunction
 
@@ -158,9 +194,6 @@ function! s:escape(str) abort
 endfunction
 
 let g:fern#mapping#fzf#disable_default_mappings = get(g:, 'fern#mapping#fzf#disable_default_mappings', 0)
-let g:Fern_mapping_fzf_customize_option = get(g:, 'Fern_mapping_fzf_customize_option', 0)
-let g:Fern_mapping_fzf_dir_sink = get(g:, 'Fern_mapping_fzf_dir_sink', 0)
-let g:Fern_mapping_fzf_file_sink = get(g:, 'Fern_mapping_fzf_file_sink', 0)
 
 " Deprecated
 let g:fern#mapping#fzf#fzf_options = get(g:, 'fern#mapping#fzf#fzf_options', {})
