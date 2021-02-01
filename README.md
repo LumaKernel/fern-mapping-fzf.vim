@@ -33,7 +33,32 @@ More details, see [`:help fern-mapping-fzf`](https://github.com/LumaKernel/fern-
 
 ![fern-mapping-fzf](https://user-images.githubusercontent.com/29811106/77903876-8e00ef00-72be-11ea-8d17-fa312cc2ab93.gif)
 
+## Sample settings
+
+### FZF multiple and mark on Fern
+
+```
+function! Fern_mapping_fzf_customize_option(spec)
+    let a:spec.options .= ' --multi'
+    return fzf#vim#with_preview(a:spec)
+endfunction
+
+function! Fern_mapping_fzf_before_all(dict)
+    if !len(a:dict.lines)
+        return
+    endif
+    return a:dict.fern_helper.async.update_marks([])
+endfunction
+
+function! s:reveal(dict)
+    execute "FernReveal -wait" a:dict.relative_path
+    execute "normal \<Plug>(fern-action-mark:set)"
+endfunction
+
+let g:Fern_mapping_fzf_file_sink = function('s:reveal')
+let g:Fern_mapping_fzf_dir_sink = function('s:reveal')
+```
+
 ## License
 
-[MIT](https://github.com/LumaKernel/fern-mapping-fzf.vim/blob/master/LICENSE) .
-
+[MIT](https://github.com/LumaKernel/fern-mapping-fzf.vim/blob/master/LICENSE)
