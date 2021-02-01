@@ -194,11 +194,6 @@ function! s:escape(str) abort
 endfunction
 
 let g:fern#mapping#fzf#disable_default_mappings = get(g:, 'fern#mapping#fzf#disable_default_mappings', 0)
-let g:Fern_mapping_fzf_before_all = get(g:, 'Fern_mapping_fzf_before_all', 0)
-let g:Fern_mapping_fzf_after_all = get(g:, 'Fern_mapping_fzf_after_all', 0)
-let g:Fern_mapping_fzf_customize_option = get(g:, 'Fern_mapping_fzf_customize_option', 0)
-let g:Fern_mapping_fzf_dir_sink = get(g:, 'Fern_mapping_fzf_dir_sink', 0)
-let g:Fern_mapping_fzf_file_sink = get(g:, 'Fern_mapping_fzf_file_sink', 0)
 
 " Deprecated
 let g:fern#mapping#fzf#fzf_options = get(g:, 'fern#mapping#fzf#fzf_options', {})
