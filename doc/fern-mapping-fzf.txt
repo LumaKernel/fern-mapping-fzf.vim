@@ -61,6 +61,7 @@ OPTIONS 				*fern-mapping-fzf-options*
 	  {dict}.root_path	: Path original fern executed.
 	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
 	  {dict}.lines		: Lines got from fzf.
+	  {dict}.from_root	: Whether from-root mode is used or not.
 	Be careful you cannot return Promise for now.
 	Default: Respects fzf default behavior. See |g:fzf_action|.
 Example: >
@@ -82,6 +83,7 @@ Example: >
 	  {dict}.root_path	: Path original fern executed.
 	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
 	  {dict}.lines		: Lines got from fzf.
+	  {dict}.from_root	: Whether from-root mode is used or not.
 	Be careful you cannot return Promise for now.
 	Default: Respects fzf default behavior. See |g:fzf_action|.
 
@@ -109,6 +111,7 @@ Example: >
 	  {dict}.root_path	: Path original fern executed.
 	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
 	  {dict}.lines		: Lines got from fzf.
+	  {dict}.from_root	: Whether from-root mode is used or not.
 	Default: Do nothing.
 Example: >
 	function! Fern_mapping_fzf_before_all(dict)
@@ -123,6 +126,7 @@ Example: >
 	  {dict}.root_path	: Path original fern executed.
 	  {dict}.fern_helper	: Fern helper dict. |fern-develop-helper|
 	  {dict}.lines		: Lines got from fzf.
+	  {dict}.from_root	: Whether from-root mode is used or not.
 	Default: Do nothing.
 Example: >
 	function! s:reveal(dict)
