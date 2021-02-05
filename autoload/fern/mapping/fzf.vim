@@ -5,11 +5,17 @@ function! fern#mapping#fzf#init(disable_default_mappings) abort
   nnoremap <buffer><silent> <Plug>(fern-action-fzf-files) :<C-u>call <SID>call('fzf_files')<CR>
   nnoremap <buffer><silent> <Plug>(fern-action-fzf-dirs) :<C-u>call <SID>call('fzf_dirs')<CR>
   nnoremap <buffer><silent> <Plug>(fern-action-fzf-both) :<C-u>call <SID>call('fzf_both')<CR>
+  nnoremap <buffer><silent> <Plug>(fern-action-fzf-root-files) :<C-u>call <SID>call('fzf_root_files')<CR>
+  nnoremap <buffer><silent> <Plug>(fern-action-fzf-root-dirs) :<C-u>call <SID>call('fzf_root_dirs')<CR>
+  nnoremap <buffer><silent> <Plug>(fern-action-fzf-root-both) :<C-u>call <SID>call('fzf_root_both')<CR>
 
   if !a:disable_default_mappings && !g:fern#mapping#fzf#disable_default_mappings
     nmap <buffer> ff <Plug>(fern-action-fzf-files)
     nmap <buffer> fd <Plug>(fern-action-fzf-dirs)
     nmap <buffer> fa <Plug>(fern-action-fzf-both)
+    nmap <buffer> frf <Plug>(fern-action-fzf-root-files)
+    nmap <buffer> frd <Plug>(fern-action-fzf-root-dirs)
+    nmap <buffer> fra <Plug>(fern-action-fzf-root-both)
   endif
 endfunction
 
@@ -21,17 +27,27 @@ function! s:call(name, ...) abort
 endfunction
 
 function! s:map_fzf_files(helper) abort
-  return s:fzf(a:helper, 1, 0)
+  return s:fzf(a:helper, 1, 0, 0)
 endfunction
 function! s:map_fzf_dirs(helper) abort
-  return s:fzf(a:helper, 0, 1)
+  return s:fzf(a:helper, 0, 1, 0)
 endfunction
 function! s:map_fzf_both(helper) abort
-  return s:fzf(a:helper, 1, 1)
+  return s:fzf(a:helper, 1, 1, 0)
 endfunction
 
-function! s:fzf(helper, files, dirs) abort
-  let nodes = a:helper.sync.get_selected_nodes()
+function! s:map_fzf_root_files(helper) abort
+  return s:fzf(a:helper, 1, 0, 1)
+endfunction
+function! s:map_fzf_root_dirs(helper) abort
+  return s:fzf(a:helper, 0, 1, 1)
+endfunction
+function! s:map_fzf_root_both(helper) abort
+  return s:fzf(a:helper, 1, 1, 1)
+endfunction
+
+function! s:fzf(helper, files, dirs, from_root) abort
+  let nodes = a:from_root ? [a:helper.sync.get_root_node()] : a:helper.sync.get_selected_nodes()
   let root_path = s:F.to_slash(s:F.remove_last_separator(a:helper.sync.get_root_node()._path))
   if empty(root_path)
     return s:Promise.reject('Invalid root.')
@@ -75,7 +91,7 @@ function! s:fzf(helper, files, dirs) abort
         \     'dir': root_path,
         \   }
         \ )
-  let opts['sink*'] = s:make_sink(root_path, opts['sink*'], a:helper)
+  let opts['sink*'] = s:make_sink(root_path, opts['sink*'], a:helper, a:from_root)
   if exists("*g:Fern_mapping_fzf_customize_option") || type(get(g:, "Fern_mapping_fzf_customize_option")) == v:t_func
     let opts = g:Fern_mapping_fzf_customize_option(opts)
   endif
@@ -97,7 +113,7 @@ function! s:nomalize_rel(rel) abort
   return rel
 endfunction
 
-function! s:make_sink(root_path, common_sink, helper) abort
+function! s:make_sink(root_path, common_sink, helper, from_root) abort
   function! s:sink(lines) abort closure
     function! s:sink_main(...) abort closure
       if len(a:lines) < 2
@@ -125,6 +141,7 @@ function! s:make_sink(root_path, common_sink, helper) abort
                 \   'root_path': a:root_path,
                 \   'full_path': full_path,
                 \   'relative_path': relative_path,
+                \   'from_root': a:from_root,
                 \ }
           if isdirectory(full_path)
             if ex_dir_sink
