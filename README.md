@@ -21,11 +21,14 @@ depends = ['fzf', 'fern.vim']
 
 ## Usage
 
-| Mapping | Action        | Description                             |
-| ------- | ------------- | --------------------------------------- |
-| `ff`    | `fzf-files`   | Fzf for files                           |
-| `fd`    | `fzf-dirs`    | Fzf for directories                     |
-| `fa`    | `fzf-both`    | Fzf for both files and directories      |
+| Mapping | Action           | Description                                  |
+| ------- | ---------------- | -------------------------------------------- |
+| `ff`    | `fzf-files`      | Fzf for files                                |
+| `fd`    | `fzf-dirs`       | Fzf for directories                          |
+| `fa`    | `fzf-both`       | Fzf for both files and directories           |
+| `frf`   | `fzf-root-files` | Fzf for files from root                      |
+| `frd`   | `fzf-root-dirs`  | Fzf for directories from root                |
+| `fra`   | `fzf-root-both`  | Fzf for both files and directories from root |
 
 More details, see [`:help fern-mapping-fzf`](https://github.com/LumaKernel/fern-mapping-fzf.vim/blob/master/doc/fern-mapping-fzf.txt) .
 
