@@ -1,7 +1,7 @@
 *fern-mapping-fzf.txt*		fern.vim plugin for fzf
 
 Author : Luma <world@luma.email>
-License: MIT <https://opensource.org/licenses/MIT>
+License: MIT <https://github.com/LumaKernel/fern-mapping-fzf.vim/blob/master/LICENSE>
 
 ==============================================================================
 CONTENTS				*fern-mapping-fzf-contents*
@@ -23,11 +23,14 @@ DEPENDENCIES				*fern-mapping-fzf-dependencies*
 ==============================================================================
 MAPPINGS 				*fern-mapping-fzf-mappings*
 
-| Mapping | Action        | Description                             |
-| ------- | ------------- | --------------------------------------- |
-| ff      | fzf-files     | Fzf for files                           |
-| fd      | fzf-dirs      | Fzf for directories                     |
-| fa      | fzf-both      | Fzf for both files and directories      |
+| Mapping | Action         | Description                                  |
+| ------- | -------------- | -------------------------------------------- |
+| ff      | fzf-files      | Fzf for files                                |
+| fd      | fzf-dirs       | Fzf for directories                          |
+| fa      | fzf-both       | Fzf for both files and directories           |
+| frf     | fzf-root-files | Fzf for files from root                      |
+| frd     | fzf-root-dirs  | Fzf for directories from root                |
+| fra     | fzf-root-both  | Fzf for both files and directories from root |
 
 You can customize the mapping like below.
 >
